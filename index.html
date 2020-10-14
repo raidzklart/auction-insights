@@ -240,7 +240,7 @@
           let data = new Uint8Array(e.target.result);
           let workbook = XLSX.read(data, { type: "array" });
           let ws = workbook.Sheets["Sheet0"];
-          sheetJSON = XLSX.utils.sheet_to_json(ws);
+          sheetJSON = XLSX.utils.sheet_to_json(ws, { range: 2 });
           //Get sheet data to format graph can accept
           dataSet = generateDataset(sheetJSON, checkColumnName());
 
@@ -253,10 +253,21 @@
         btn.hidden = false;
       }
       function generateDataset(sheet, columnName) {
-        sheet = sheet.filter(item => (item[columnName]))
-        console.log(sheet);
         dataSet = [];
         for (let i = 0; i < sheet.length; i++) {
+          let x = undefined;
+          if (sheet[i]["Day"]) {
+            x = moment(sheet[i]["Day"], "YYYY-MM-DD");
+          }
+          if (sheet[i]["Week"]) {
+            x = moment(sheet[i]["Week"], "YYYY-MM-DD");
+          }
+          if (sheet[i]["Month"]) {
+            x = moment(sheet[i]["Month"], "YYYY-MM-DD");
+          }
+          let y =
+            sheet[i][columnName] === "< 10%" ? 0.05 : sheet[i][columnName];
+
           if (
             !dataSet.some(
               (item) => item.label === sheet[i]["Display URL domain"]
@@ -270,13 +281,6 @@
               "," +
               Math.floor(Math.random() * 256) +
               ")";
-            let x =
-              moment(sheet[i]["Day"], "YYYY-MM-DD") ||
-              moment(sheet[i]["Week"], "YYYY-MM-DD") ||
-              moment(sheet[i]["Month"], "YYYY-MM-DD");
-            let y =
-              sheet[i][columnName] === "< 10%" ? 0.05 : sheet[i][columnName];
-            console.log(y);
             dataSet.push({
               label: sheet[i]["Display URL domain"],
               lineTension: 0.2,
@@ -293,11 +297,8 @@
             for (let j = 0; j < dataSet.length; j++) {
               if (dataSet[j].label === sheet[i]["Display URL domain"]) {
                 dataSet[j].data.push({
-                  x: moment(sheet[i]["Day"], "YYYY-MM-DD"),
-                  y:
-                    sheet[i][columnName] === "< 10%"
-                      ? 0.05
-                      : sheet[i][columnName],
+                  x: x,
+                  y: y,
                 });
               }
             }
@@ -318,10 +319,6 @@
         for (let i = 0; i < dataSet.length; i++) {
           dataSet[i].data.sort(compare);
         }
-        console.log(getAveragePercent(dataSet[1]));
-        console.log(getOverallAverage(dataSet));
-        console.log(getSixthHighestValue(dataSet));
-        console.log(median(dataSet));
         return removeBelowMedian(removeAllZeros(dataSet));
       }
       function getAveragePercent(competitor) {
@@ -380,9 +377,11 @@
         return (values[half - 1] + values[half]) / 2.0;
       }
       function removeBelowMedian(dataSet) {
-        for (let i = dataSet.length - 1; i >= 0; i--) {
-          if (getAveragePercent(dataSet[i]) < median(dataSet)) {
-            dataSet.splice(i, 1);
+        if (dataSet.length > 10) {
+          for (let i = dataSet.length - 1; i >= 0; i--) {
+            if (getAveragePercent(dataSet[i]) < median(dataSet)) {
+              dataSet.splice(i, 1);
+            }
           }
         }
         return dataSet;
