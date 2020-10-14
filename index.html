@@ -253,6 +253,7 @@
         btn.hidden = false;
       }
       function generateDataset(sheet, columnName) {
+              console.log(sheet)
         dataSet = [];
         for (let i = 0; i < sheet.length; i++) {
           if (
@@ -272,7 +273,7 @@
                     moment(sheet[i]["Week"], "YYYY-MM-DD") ||
                     moment(sheet[i]["Month"], "YYYY-MM-DD")
             let y = sheet[i][columnName] === "< 10%" ? 0.05 : sheet[i][columnName]
-            console.log(sheet[i][columnName] === "< 10%" ? 0.05 : sheet[i][columnName])
+            console.log(y)
             dataSet.push({
               label: sheet[i]["Display URL domain"],
               lineTension: 0.2,
