@@ -271,17 +271,15 @@
             let x = moment(sheet[i]["Day"], "YYYY-MM-DD") ||
                     moment(sheet[i]["Week"], "YYYY-MM-DD") ||
                     moment(sheet[i]["Month"], "YYYY-MM-DD")
+            let y = sheet[i][columnName] === "< 10%" ? 0.05 : sheet[i][columnName]
+            console.log(sheet[i][columnName] === "< 10%" ? 0.05 : sheet[i][columnName])
             dataSet.push({
               label: sheet[i]["Display URL domain"],
               lineTension: 0.2,
               data: [
                 {
                   x: x,
-                  y:
-                    sheet[i][columnName] === "< 10%"
-                      ? 0.05
-                      : sheet[i][columnName],
-                },
+                  y: y                },
               ],
               backgroundColor: "rgba(255,255,255,0)",
               borderColor: color,
