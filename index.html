@@ -253,7 +253,8 @@
         btn.hidden = false;
       }
       function generateDataset(sheet, columnName) {
-              console.log(sheet)
+        sheet = sheet.filter(item => (item[columnName]))
+        console.log(sheet);
         dataSet = [];
         for (let i = 0; i < sheet.length; i++) {
           if (
@@ -269,18 +270,21 @@
               "," +
               Math.floor(Math.random() * 256) +
               ")";
-            let x = moment(sheet[i]["Day"], "YYYY-MM-DD") ||
-                    moment(sheet[i]["Week"], "YYYY-MM-DD") ||
-                    moment(sheet[i]["Month"], "YYYY-MM-DD")
-            let y = sheet[i][columnName] === "< 10%" ? 0.05 : sheet[i][columnName]
-            console.log(y)
+            let x =
+              moment(sheet[i]["Day"], "YYYY-MM-DD") ||
+              moment(sheet[i]["Week"], "YYYY-MM-DD") ||
+              moment(sheet[i]["Month"], "YYYY-MM-DD");
+            let y =
+              sheet[i][columnName] === "< 10%" ? 0.05 : sheet[i][columnName];
+            console.log(y);
             dataSet.push({
               label: sheet[i]["Display URL domain"],
               lineTension: 0.2,
               data: [
                 {
                   x: x,
-                  y: y                }
+                  y: y,
+                },
               ],
               backgroundColor: "rgba(255,255,255,0)",
               borderColor: color,
