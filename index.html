@@ -268,16 +268,15 @@
               "," +
               Math.floor(Math.random() * 256) +
               ")";
-
+            let x = moment(sheet[i]["Day"], "YYYY-MM-DD") ||
+                    moment(sheet[i]["Week"], "YYYY-MM-DD") ||
+                    moment(sheet[i]["Month"], "YYYY-MM-DD")
             dataSet.push({
               label: sheet[i]["Display URL domain"],
               lineTension: 0.2,
               data: [
                 {
-                  x:
-                    moment(sheet[i]["Day"], "YYYY-MM-DD") ||
-                    moment(sheet[i]["Week"], "YYYY-MM-DD") ||
-                    moment(sheet[i]["Month"], "YYYY-MM-DD"),
+                  x: x,
                   y:
                     sheet[i][columnName] === "< 10%"
                       ? 0.05
